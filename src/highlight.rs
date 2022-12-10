@@ -1,20 +1,19 @@
 use colored::Colorize;
+use std::collections::HashMap;
 use tree_sitter::{Language, Node, Parser, TreeCursor};
 
 fn get_node_range(node: Node) -> Vec<(std::ops::Range<usize>, colored::Color)> {
     let mut ret = Vec::new();
 
-    if node.kind().eq("string_literal") {
-        ret.push((node.byte_range(), colored::Color::BrightMagenta));
-    }
-    if node.kind().eq("identifier") {
-        ret.push((node.byte_range(), colored::Color::BrightGreen));
-    }
-    if node.kind().eq("fn") {
-        ret.push((node.byte_range(), colored::Color::Yellow));
-    }
-    if node.kind().eq("!") {
-        ret.push((node.byte_range(), colored::Color::Blue));
+    let mut key: HashMap<&str, colored::Color> = HashMap::new();
+    key.insert("string_literal", colored::Color::BrightRed);
+    key.insert("identifier", colored::Color::BrightMagenta);
+    key.insert("fn", colored::Color::White);
+    key.insert("!", colored::Color::BrightBlack);
+
+    match key.get(node.kind()) {
+        Some(color) => ret.push((node.byte_range(), *color)),
+        None => {}
     }
 
     ret
