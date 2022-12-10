@@ -1,17 +1,26 @@
 use colored::Colorize;
 use tree_sitter::{Language, Node, Parser, TreeCursor};
 
-fn get_node_range(node: Node) -> Vec<std::ops::Range<usize>> {
+fn get_node_range(node: Node) -> Vec<(std::ops::Range<usize>, colored::Color)> {
     let mut ret = Vec::new();
 
     if node.kind().eq("string_literal") {
-        ret.push(node.byte_range());
+        ret.push((node.byte_range(), colored::Color::BrightMagenta));
+    }
+    if node.kind().eq("identifier") {
+        ret.push((node.byte_range(), colored::Color::BrightGreen));
+    }
+    if node.kind().eq("fn") {
+        ret.push((node.byte_range(), colored::Color::Yellow));
+    }
+    if node.kind().eq("!") {
+        ret.push((node.byte_range(), colored::Color::Blue));
     }
 
     ret
 }
 
-fn traverse_tree(mut cursor: TreeCursor) -> Vec<std::ops::Range<usize>> {
+fn traverse_tree(mut cursor: TreeCursor) -> Vec<(std::ops::Range<usize>, colored::Color)> {
     let mut ret = Vec::new();
     if !cursor.goto_first_child() {
         return ret;
@@ -49,15 +58,17 @@ pub fn print(src: &str) {
     let mut k = 0;
     for i in src.chars() {
         let mut found = false;
+        let mut color = colored::Color::White;
 
         for j in ranges.clone() {
-            if j.contains(&k) {
+            if j.0.contains(&k) {
                 found = true;
+                color = j.1;
                 break;
             }
         }
         if found {
-            print!("{}", format!("{}", i).magenta());
+            print!("{}", format!("{}", i).color(color));
         } else {
             print!("{}", i);
         }
