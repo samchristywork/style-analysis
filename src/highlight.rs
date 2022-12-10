@@ -1,28 +1,67 @@
-use tree_sitter::{Node, TreeCursor};
+use colored::Colorize;
+use tree_sitter::{Language, Node, Parser, TreeCursor};
 
-fn print_node(node: Node, src: &str) {
-    // let source_code = "fn test() { println!(\"Hello, World!\"); }";
+fn get_node_range(node: Node) -> Vec<std::ops::Range<usize>> {
+    let mut ret = Vec::new();
 
-    // print!("{}", " ".repeat(level));
-    if node.child_count() == 0 {
-        println!("{}", &src[node.start_byte()..node.end_byte()]);
+    if node.kind().eq("string_literal") {
+        ret.push(node.byte_range());
     }
-    // println!("{:?}", node.kind());
+
+    ret
 }
 
-pub fn traverse_tree(mut cursor: TreeCursor, src: &str) {
+fn traverse_tree(mut cursor: TreeCursor) -> Vec<std::ops::Range<usize>> {
+    let mut ret = Vec::new();
     if !cursor.goto_first_child() {
-        return;
+        return ret;
     }
-    print_node(cursor.node(), src);
+    ret.append(&mut get_node_range(cursor.node()));
 
     loop {
-        print_node(cursor.node(), src);
+        ret.append(&mut get_node_range(cursor.node()));
 
-        traverse_tree(cursor.clone(), src);
+        ret.append(&mut traverse_tree(cursor.clone()));
 
         if !cursor.goto_next_sibling() {
             break;
         }
+    }
+
+    ret
+}
+
+pub fn print(src: &str) {
+    let mut parser = Parser::new();
+
+    extern "C" {
+        fn tree_sitter_rust() -> Language;
+    }
+
+    let language = unsafe { tree_sitter_rust() };
+    parser.set_language(language).unwrap();
+
+    let tree = parser.parse(src, None).unwrap();
+    let root_node = tree.root_node();
+
+    let ranges = traverse_tree(root_node.walk());
+
+    let mut k = 0;
+    for i in src.chars() {
+        let mut found = false;
+
+        for j in ranges.clone() {
+            if j.contains(&k) {
+                found = true;
+                break;
+            }
+        }
+        if found {
+            print!("{}", format!("{}", i).magenta());
+        } else {
+            print!("{}", i);
+        }
+
+        k += 1;
     }
 }
