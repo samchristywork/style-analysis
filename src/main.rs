@@ -1,5 +1,7 @@
 use tree_sitter::{Language, Node, Parser, TreeCursor};
 
+pub mod highlight;
+
 fn print_node(node: Node, level: usize) {
     let source_code = "fn test() { println!(\"Hello, World!\"); }";
 
