@@ -1,6 +1,7 @@
 use std::fs;
 use tree_sitter::{Language, Parser};
 
+pub mod case;
 pub mod highlight;
 pub mod traverse;
 
@@ -38,4 +39,19 @@ fn main() {
             &source_code[identifier.start_byte()..identifier.end_byte()]
         );
     }
+
+    assert_eq!(case::is_camel("someCase"), true);
+    assert_eq!(case::is_camel("SomeCase"), false);
+    assert_eq!(case::is_pascal("SomeCase"), true);
+    assert_eq!(case::is_pascal("someCase"), false);
+    assert_eq!(case::is_screaming_snake("SOME_CASE"), true);
+    assert_eq!(case::is_screaming_snake("some_case"), false);
+    assert_eq!(case::is_uppercase("SOMECASE"), true);
+    assert_eq!(case::is_uppercase("SOME_CASE"), false);
+    assert_eq!(case::is_kebab_case("some-case"), true);
+    assert_eq!(case::is_kebab_case("Some-case"), false);
+    assert_eq!(case::is_lowercase("somecase"), true);
+    assert_eq!(case::is_lowercase("some case"), false);
+    assert_eq!(case::is_snake_case("some_case"), true);
+    assert_eq!(case::is_snake_case("some-case"), false);
 }
