@@ -74,4 +74,5 @@ pub fn print(src: &str) {
 
         k += 1;
     }
+    println!("");
 }

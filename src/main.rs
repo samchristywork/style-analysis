@@ -2,8 +2,9 @@ use tree_sitter::{Node, TreeCursor};
 
 pub mod highlight;
 
-fn print_node(node: Node, level: usize) {
-    let source_code = "fn test() { println!(\"Hello, World!\"); }";
+fn main() {
+    let source_code = "fn test() {\n    print!(\"Hello, \");\n    println!(\"World!\");\n}";
+    highlight::print(source_code);
 
     print!("{}", " ".repeat(level));
     // println!("{:?}", &source_code[node.start_byte()..node.end_byte()]);
