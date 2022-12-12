@@ -23,4 +23,9 @@ fn main() {
         print!("{}", " ".repeat(l));
         println!("{}", n.kind())
     });
+
+    println!(
+        "{:?}",
+        traverse::collect_nodes(root_node.walk(), |n| n.kind().eq("string_literal"))
+    );
 }
