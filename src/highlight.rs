@@ -39,15 +39,24 @@ fn traverse_tree(mut cursor: TreeCursor) -> Vec<(std::ops::Range<usize>, colored
     ret
 }
 
-pub fn print(src: &str) {
+pub fn print(src: &str, language: &str) {
     let mut parser = Parser::new();
 
     extern "C" {
         fn tree_sitter_rust() -> Language;
     }
 
-    let language = unsafe { tree_sitter_rust() };
-    parser.set_language(language).unwrap();
+    extern "C" {
+        fn tree_sitter_javascript() -> Language;
+    }
+
+    parser
+        .set_language(match language {
+            "rust" => unsafe { tree_sitter_rust() },
+            "javascript" => unsafe { tree_sitter_javascript() },
+            _ => panic!("Language ({}) not supported.", language),
+        })
+        .unwrap();
 
     let tree = parser.parse(src, None).unwrap();
     let root_node = tree.root_node();

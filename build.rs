@@ -8,4 +8,12 @@ fn main() {
         .file(dir.join("parser.c"))
         .file(dir.join("scanner.c"))
         .compile("tree-sitter-rust");
+
+    let dir: PathBuf = ["tree-sitter-javascript", "src"].iter().collect();
+
+    cc::Build::new()
+        .include(&dir)
+        .file(dir.join("parser.c"))
+        .file(dir.join("scanner.c"))
+        .compile("tree-sitter-javascript");
 }

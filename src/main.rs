@@ -5,8 +5,8 @@ pub mod highlight;
 pub mod traverse;
 
 fn main() {
-    let source_code = fs::read_to_string("input.rs").unwrap();
-    highlight::print(source_code.as_str());
+    let source_code = fs::read_to_string("input.js").unwrap();
+    highlight::print(source_code.as_str(), "javascript");
 
     let mut parser = Parser::new();
 
@@ -17,7 +17,7 @@ fn main() {
     let language = unsafe { tree_sitter_rust() };
     parser.set_language(language).unwrap();
 
-    let tree = parser.parse(source_code, None).unwrap();
+    let tree = parser.parse(source_code.clone(), None).unwrap();
     let root_node = tree.root_node();
 
     traverse::traverse_tree(root_node.walk(), 0, |n, l| {
@@ -29,4 +29,13 @@ fn main() {
         "{:?}",
         traverse::collect_nodes(root_node.walk(), |n| n.kind().eq("string_literal"))
     );
+
+    let identifiers = traverse::collect_nodes(root_node.walk(), |n| n.kind().eq("identifier"));
+
+    for identifier in identifiers {
+        println!(
+            "{}",
+            &source_code[identifier.start_byte()..identifier.end_byte()]
+        );
+    }
 }
