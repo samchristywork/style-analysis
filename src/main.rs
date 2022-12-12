@@ -1,11 +1,12 @@
+use std::fs;
 use tree_sitter::{Language, Parser};
 
 pub mod highlight;
 pub mod traverse;
 
 fn main() {
-    let source_code = "fn test() {\n    print!(\"Hello, \");\n    println!(\"World!\");\n}";
-    highlight::print(source_code);
+    let source_code = fs::read_to_string("input.rs").unwrap();
+    highlight::print(source_code.as_str());
 
     let mut parser = Parser::new();
 
