@@ -1,4 +1,4 @@
-use std::fs;
+use std::{env, fs};
 use tree_sitter::{Language, Parser};
 
 pub mod case;
@@ -24,11 +24,21 @@ fn print_ast(source_code: &str) {
     });
 }
 
-fn main() {
-    let source_code = fs::read_to_string("src/main.rs").unwrap();
+fn usage(program_name: &str) {
+    println!("Usage: {} file language", program_name);
+}
 
-    highlight::print(source_code.as_str(), "rust");
+fn main() -> Result<(), std::io::Error> {
+    let args: Vec<String> = env::args().collect();
+    let source_code = fs::read_to_string(args[1].as_str()).unwrap_or_else(|_| {
+        usage(args[0].as_str());
+        "".to_string()
+    });
+
     print_ast(source_code.as_str());
+    highlight::print(source_code.as_str(), args[2].as_str());
+
+    Ok(())
 }
 
 #[cfg(test)]
