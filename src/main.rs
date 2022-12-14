@@ -5,10 +5,7 @@ pub mod case;
 pub mod highlight;
 pub mod traverse;
 
-fn main() {
-    let source_code = fs::read_to_string("src/main.rs").unwrap();
-    highlight::print(source_code.as_str(), "rust");
-
+fn print_ast(source_code: &str) {
     let mut parser = Parser::new();
 
     extern "C" {
@@ -25,20 +22,13 @@ fn main() {
         print!("{}", " ".repeat(l));
         println!("{}", n.kind())
     });
+}
 
-    println!(
-        "{:?}",
-        traverse::collect_nodes(root_node.walk(), |n| n.kind().eq("string_literal"))
-    );
+fn main() {
+    let source_code = fs::read_to_string("src/main.rs").unwrap();
 
-    let identifiers = traverse::collect_nodes(root_node.walk(), |n| n.kind().eq("identifier"));
-
-    for identifier in identifiers {
-        println!(
-            "{}",
-            &source_code[identifier.start_byte()..identifier.end_byte()]
-        );
-    }
+    highlight::print(source_code.as_str(), "rust");
+    print_ast(source_code.as_str());
 }
 
 #[cfg(test)]
