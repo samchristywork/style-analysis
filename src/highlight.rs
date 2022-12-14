@@ -6,10 +6,12 @@ fn get_node_range(node: Node) -> Vec<(std::ops::Range<usize>, colored::Color)> {
     let mut ret = Vec::new();
 
     let mut key: HashMap<&str, colored::Color> = HashMap::new();
-    key.insert("string_literal", colored::Color::BrightRed);
-    key.insert("identifier", colored::Color::BrightMagenta);
-    key.insert("fn", colored::Color::White);
-    key.insert("!", colored::Color::BrightBlack);
+    key.insert("string_literal", colored::Color::Magenta);
+    key.insert("identifier", colored::Color::Cyan);
+    key.insert("let", colored::Color::Yellow);
+    key.insert("integer_literal", colored::Color::Magenta);
+    key.insert("fn", colored::Color::Yellow);
+    key.insert("!", colored::Color::Magenta);
 
     match key.get(node.kind()) {
         Some(color) => ret.push((node.byte_range(), *color)),

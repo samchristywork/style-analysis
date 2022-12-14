@@ -2,6 +2,10 @@
 
 ## Overview
 
+A program that takes source code as input and performs some syntax checking on
+it to help detect style problems. Basically a simple but highly customizable
+linter.
+
 ## Screenshots
 
 ## Features
@@ -17,7 +21,7 @@
 ## Usage
 
 ```
-cargo run
+cargo run -- input_file language
 ```
 
 ## License
