@@ -28,8 +28,14 @@ fn usage(program_name: &str) {
     println!("Usage: {} file language", program_name);
 }
 
-fn main() -> Result<(), std::io::Error> {
+fn main() {
     let args: Vec<String> = env::args().collect();
+
+    if args.len() < 3 {
+        usage(args[0].as_str());
+        return;
+    }
+
     let source_code = fs::read_to_string(args[1].as_str()).unwrap_or_else(|_| {
         usage(args[0].as_str());
         "".to_string()
@@ -37,8 +43,6 @@ fn main() -> Result<(), std::io::Error> {
 
     print_ast(source_code.as_str());
     highlight::print(source_code.as_str(), args[2].as_str());
-
-    Ok(())
 }
 
 #[cfg(test)]

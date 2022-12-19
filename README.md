@@ -2,11 +2,16 @@
 
 ## Overview
 
-A program that takes source code as input and performs some syntax checking on
-it to help detect style problems. Basically a simple but highly customizable
-linter.
+This is a program that takes source code as input and converts it to an abstract
+syntax tree that allows for some static analysis like listing tokens that match
+a specific criteria, pattern matching structures, and making changes to source
+code.
+
+This program can also print out abstract syntax trees and highlight code.
 
 ## Screenshots
+
+<img src="./screenshots/hello_world.png" width=250></img>
 
 ## Features
 

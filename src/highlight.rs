@@ -11,6 +11,10 @@ fn get_node_range(node: Node) -> Vec<(std::ops::Range<usize>, colored::Color)> {
     key.insert("let", colored::Color::Yellow);
     key.insert("integer_literal", colored::Color::Magenta);
     key.insert("fn", colored::Color::Yellow);
+    key.insert("mod", colored::Color::Yellow);
+    key.insert("use", colored::Color::Yellow);
+    key.insert("crate", colored::Color::Yellow);
+    key.insert("extern", colored::Color::Green);
     key.insert("!", colored::Color::Magenta);
 
     match key.get(node.kind()) {
